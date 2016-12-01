@@ -3,7 +3,7 @@
 
 int main() {
 
-	KDTREE *tree = new KDTREE();
+	kd_tree *tree = new kd_tree();
 
 	vector<int> values;
 	values.push_back(1);

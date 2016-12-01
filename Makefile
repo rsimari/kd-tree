@@ -8,7 +8,7 @@ main: kdtree.o
 %.o: %.cpp
 	$(COMP) $(FLAGS) -o $@ -c $<
 
-test:
+test: kdtree.o test.t.cpp
 	$(COMP) test.t.cpp -o test && ./test
 
 clean:

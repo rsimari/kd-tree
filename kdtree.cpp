@@ -2,10 +2,11 @@
 #include <vector>
 #include <cmath>
 #include <climits>
+#include <cassert>
 using namespace std;
 
+// template<Typename T>
 class kd_node {
-	// orientation?
 	public:
 	vector<int> values;
 	kd_node* left;
@@ -18,49 +19,69 @@ class kd_node {
 	~kd_node() { delete left; delete right; }
 };
 
-class KDTREE {
+// template<typename T>
+class kd_tree {
 public:
-	KDTREE() : dimensions(2) { root = nullptr; }
-	KDTREE(int d) : dimensions(d) { root = nullptr; }
-	~KDTREE() { delete root; }
+	kd_tree() : dimensions(2), SIZE(0) { root = nullptr; }
+	kd_tree(int d) :  SIZE(0) {
+		if (d < 1) dimensions = 2;
+		else dimensions = d;
+		root = nullptr;
+	}
+	~kd_tree() { delete root; }
 	void insert(vector<int> &new_values) {
-		// TODO: check size of vector here? must be equal to dimensions
+		if (new_values.size() != dimensions) return;
 		if (root == nullptr) {
 			kd_node* new_node = new kd_node;
 			new_node->values = new_values;
 			root = new_node;
+			SIZE++;
 		} else insert_r(root, new_values, 0);
 	}
+
 	vector<int> nearest_neighbor(vector<int> &n) {
 		int orientation = 0;
 		int max = INT_MAX;
+		kd_node* nearest = nullptr;
 		nearest_neighbor_r(root, n, orientation, max, nearest);
+		if (nearest == nullptr) return vector<int>();
 		return nearest->values;
 	}
 
 	void print() { print_r(root); }
+	size_t size() const { return SIZE; }
+	int dimension() const { return dimensions; }
 
 private:
 	kd_node* root;
 	int dimensions;
+	size_t SIZE;
 	void insert_r(kd_node* root, vector<int> &new_values, int orientation) {
 		if (root == nullptr) return;
 		orientation %= dimensions;
 		// normal bst insertion except we look at a specific element of the values vector
-		if (new_values[orientation] < root->values[orientation])
+		if (new_values[orientation] < root->values[orientation]) {
 			if (root->left == nullptr) {
 				kd_node* new_node = new kd_node;
 				root->left = new_node;
 				new_node->values = new_values;
+				SIZE++;
 				return;
-			} else insert_r(root->left, new_values, orientation + 1);
-		else if (new_values[orientation] >= root->values[orientation])
+			} else {
+				insert_r(root->left, new_values, orientation + 1);
+			}
+		}
+		else if (new_values[orientation] >= root->values[orientation]) {
 			if (root->right == nullptr) {
 				kd_node* new_node = new kd_node;
 				root->right = new_node;
 				new_node->values = new_values;
+				SIZE++;
 				return;
-			} else insert_r(root->right, new_values, orientation + 1);
+			} else  {
+				insert_r(root->right, new_values, orientation + 1);
+			}
+		} 
 		return;
 	}
 
@@ -68,17 +89,17 @@ private:
 		// print value in tree using in_order traversal
 		if (root == nullptr) return;
 		print_r(root->left);
-		int size = root->values.size();
+		int sz = root->values.size();
 		cout << "(";
-		for (int i = 0; i < size - 1; i++)
+		for (int i = 0; i < sz - 1; i++)
 			cout << root->values[i] << ", ";
-		cout << root->values[size - 1] << ")" << endl;
+		cout << root->values[sz - 1] << ")" << endl;
 		print_r(root->right);
 	}
 
 	void nearest_neighbor_r(kd_node* &root, vector<int> &n, int orientation, int &min_dist, kd_node* &near) {
-
-		root->print();
+		if (root == nullptr) return;
+		
 		if (root->left == nullptr && root->right == nullptr) {
 			int d = dist(root->values, n);
 			min_dist = d;
