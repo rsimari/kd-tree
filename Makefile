@@ -1,11 +1,15 @@
 FLAGS= -g -std=c++11
+COMP=g++
 all: main
 
 main: kdtree.o
-	g++ $(FLAGS) main.cpp -o main
+	$(COMP) $(FLAGS) main.cpp -o main
 
 %.o: %.cpp
-	g++ $(FLAGS) -o $@ -c $<
+	$(COMP) $(FLAGS) -o $@ -c $<
+
+test:
+	$(COMP) test.t.cpp -o test && ./test
 
 clean:
-	rm *.o main
+	rm *.o main test
