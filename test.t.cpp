@@ -99,23 +99,23 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		c.push_back(1); c.push_back(2);
 		k.insert(c);
 
-		c[0] = 4; c[1] = 2;
+		c[0] = 4; c[1] = 2; // right
 		k.insert(c);
 
-		c[0] = 8; c[1] = 5;
+		c[0] = 8; c[1] = 5; // right, right
 		k.insert(c);
 
-		c[0] = 9; c[1] = 10;
+		c[0] = 9; c[1] = 10; // right, right, right
 		k.insert(c);
 
-		c[0] = 9; c[1] = 2;
+		c[0] = 9; c[1] = 2; // right, right, right, left
 		k.insert(c);
 
-		c[0] = 3; c[1] = 3;
+		c[0] = 3; c[1] = 3; // right, right, left
 		k.insert(c);
 
 		c[0] = 1; c[1] = 1;
-		vector<int> d = k.nearest_neighbor(c);
+		vector<int> d = k.nearest_neighbor(c); // should be 1,2
 
 		REQUIRE(d[0] == 1);
 		REQUIRE(d[1] == 2);
@@ -126,23 +126,23 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		c.push_back(1); c.push_back(2);
 		k.insert(c);
 
-		c[0] = 4; c[1] = 2;
+		c[0] = 4; c[1] = 2; // right
 		k.insert(c);
 
-		c[0] = 8; c[1] = 5;
+		c[0] = 8; c[1] = 5; // right, right
 		k.insert(c);
 
-		c[0] = 9; c[1] = 10;
+		c[0] = 9; c[1] = 10; // right, right, right
 		k.insert(c);
 
-		c[0] = 9; c[1] = 2;
+		c[0] = 9; c[1] = 2; // right, right, right, left
 		k.insert(c);
 
-		c[0] = 3; c[1] = 3;
+		c[0] = 3; c[1] = 3; // right, right, left
 		k.insert(c);
 
 		c[0] = 7; c[1] = 5;
-		vector<int> d = k.nearest_neighbor(c);
+		vector<int> d = k.nearest_neighbor(c); // should be 8,5
 
 		REQUIRE(d[0] == 8);
 		REQUIRE(d[1] == 5);
@@ -156,9 +156,12 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		c[0] = 2; c[1] = 6; // left
 		k.insert(c);
 
-		c[0] = 4; c[1] = 1; // right
+		c[0] = 5; c[1] = 10; // right
 		k.insert(c);
 
+		c[0] = 4; c[1] = 1; // right, left
+		k.insert(c);
+ 
 		c[0] = 3; c[1] = 3; // left, left
 		k.insert(c);
 
