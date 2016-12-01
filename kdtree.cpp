@@ -99,7 +99,7 @@ private:
 
 	void nearest_neighbor_r(kd_node* &root, vector<int> &n, int orientation, int &min_dist, kd_node* &near) {
 		if (root == nullptr) return;
-		
+		// root->print();
 		if (root->left == nullptr && root->right == nullptr) {
 			int d = dist(root->values, n);
 			min_dist = d;

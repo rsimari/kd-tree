@@ -70,7 +70,7 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		REQUIRE(d[1] == v[1]);
 	}
 
-	SECTION("NN search w/ recursing to a leaf and back to root, leaf is NN") {
+	SECTION("NN search where leaf is NN") {
 		vector<int> c;
 		c.push_back(4); c.push_back(5); 
 		k.insert(c); // root
@@ -93,5 +93,61 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		REQUIRE(d[0] == 3);
 		REQUIRE(d[1] == 3);
 	}
+
+	SECTION("NN search where root is NN") {
+		vector<int> c;
+		c.push_back(1); c.push_back(2);
+		k.insert(c);
+
+		c[0] = 4; c[1] = 2;
+		k.insert(c);
+
+		c[0] = 8; c[1] = 5;
+		k.insert(c);
+
+		c[0] = 9; c[1] = 10;
+		k.insert(c);
+
+		c[0] = 9; c[1] = 2;
+		k.insert(c);
+
+		c[0] = 3; c[1] = 3;
+		k.insert(c);
+
+		c[0] = 1; c[1] = 1;
+		vector<int> d = k.nearest_neighbor(c);
+
+		REQUIRE(d[0] == 1);
+		REQUIRE(d[1] == 2);
+	}
+
+	SECTION("NN search where NN is non leaf or root") {
+		vector<int> c;
+		c.push_back(1); c.push_back(2);
+		k.insert(c);
+
+		c[0] = 4; c[1] = 2;
+		k.insert(c);
+
+		c[0] = 8; c[1] = 5;
+		k.insert(c);
+
+		c[0] = 9; c[1] = 10;
+		k.insert(c);
+
+		c[0] = 9; c[1] = 2;
+		k.insert(c);
+
+		c[0] = 3; c[1] = 3;
+		k.insert(c);
+
+		c[0] = 7; c[1] = 5;
+		vector<int> d = k.nearest_neighbor(c);
+
+		REQUIRE(d[0] == 8);
+		REQUIRE(d[1] == 5);
+	}
+
+	// TODO: need tests for recursing and then switching subtrees
 }
 
