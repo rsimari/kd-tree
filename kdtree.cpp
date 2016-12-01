@@ -55,6 +55,7 @@ public:
 		2 choices:
 			1. pick random kd_nodes and insert them (probably will be balanced, but fast) O(n)
 			2. find median and do inserts with median (balanced, but slower) O(nlog(n))
+		we could create both and bench mark them too...
 		*/ 
 	}
 
