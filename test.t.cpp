@@ -53,12 +53,45 @@ TEST_CASE( "Insert Tests", "[kdtree::insert]" ){
 TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 	kd_tree k;
 	vector<int> v;
-	v.push_back(1);
+	v.push_back(1); 
 	v.push_back(2);
 
 	SECTION("Empty tree") {
 		vector<int> c = k.nearest_neighbor(v);
 		REQUIRE(c.size() == 0);
+	}
+
+	SECTION("NN search w/ kd_tree.size() == 1") {
+		k.insert(v);
+		vector<int> c;
+		c.push_back(2); c.push_back(3);
+		vector<int> d = k.nearest_neighbor(v);
+		REQUIRE(d[0] == v[0]);
+		REQUIRE(d[1] == v[1]);
+	}
+
+	SECTION("NN search w/ recursing to a leaf and back to root, leaf is NN") {
+		vector<int> c;
+		c.push_back(4); c.push_back(5); 
+		k.insert(c); // root
+
+		c[0] = 2; c[1] = 6; // left
+		k.insert(c);
+
+		c[0] = 6; c[1] = 5; // right
+		k.insert(c);
+
+		c[0] = 3; c[1] = 3; // left, left
+		k.insert(c);
+
+		c[0] = 2; c[1] = 8; // left, right
+		k.insert(c);
+
+		c[0] = 3; c[1] = 1; // should be closest to 3,3 ?
+		vector<int> d = k.nearest_neighbor(c);
+
+		REQUIRE(d[0] == 3);
+		REQUIRE(d[1] == 3);
 	}
 }
 
