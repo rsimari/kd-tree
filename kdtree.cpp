@@ -4,11 +4,16 @@
 #include <climits>
 using namespace std;
 
-struct kd_node {
+class kd_node {
 	// orientation?
+	public:
 	vector<int> values;
 	kd_node* left;
 	kd_node* right;
+	void print() {
+		for (vector<int>::iterator it = values.begin(); it < values.end(); it++) cout << *it << " ";
+		cout << endl;
+	}
 	kd_node() { left = nullptr; right = nullptr; }
 	~kd_node() { delete left; delete right; }
 };
@@ -18,6 +23,7 @@ public:
 	KDTREE() : dimensions(2) { root = nullptr; }
 	KDTREE(int d) : dimensions(d) { root = nullptr; }
 	~KDTREE() { delete root; }
+
 	void insert(vector<int> new_values) {
 		// TODO: check size of vector here? must be equal to dimensions
 		if (root == nullptr) {
@@ -26,17 +32,23 @@ public:
 			root = new_node;
 		} else insert_r(root, new_values, 0);
 	}
+
 	vector<int> nearest_neighbor(vector<int> n) {
-		kd_node* nearest = nearest_neighbor_r(root, n, 0, numeric_limits<double>::max(), nullptr);
+		kd_node* nearest;
+		int orientation = 0;
+		int max = INT_MAX;
+		nearest_neighbor_r(root, n, orientation, max, nearest);
 		return nearest->values;
 	}
+
 	void print() { print_r(root); }
+
 private:
 	kd_node* root;
 	int dimensions;
+
 	void insert_r(kd_node* root, vector<int> new_values, int orientation) {
 		if (root == nullptr) {
-			cout << "here";
 			return;
 		}
 		orientation %= dimensions;
@@ -47,7 +59,7 @@ private:
 				new_node->values = new_values;
 				return;
 			} else insert_r(root->left, new_values, orientation + 1);
-		if (new_values[orientation] >= root->values[orientation]) 
+		else if (new_values[orientation] >= root->values[orientation])
 			if (root->right == nullptr) {
 				kd_node* new_node = new kd_node;
 				root->right = new_node;
@@ -56,38 +68,70 @@ private:
 			} else insert_r(root->right, new_values, orientation + 1);
 		return;
 	}
+
 	void print_r(kd_node* root) {
 		if (root == nullptr) return;
 		print_r(root->left);
 		int size = root->values.size();
 		cout << "(";
-		for (int i = 0; i < size - 1; i++) 
+		for (int i = 0; i < size - 1; i++)
 			cout << root->values[i] << ", ";
 		cout << root->values[size - 1] << ")" << endl;
 		print_r(root->right);
 	}
-	kd_node* nearest_neighbor_r(kd_node* root, vector<int> n, int orientation, double min_dist, kd_node* near) {
-		if (root->left == nullptr && root->right == nullptr) return root;
+
+	void nearest_neighbor_r(kd_node* &root, vector<int> &n, int orientation, int &min_dist, kd_node* &near) {
+
+		root->print();
+		if (root->left == nullptr && root->right == nullptr) {
+			int d = dist(root->values, n);
+			min_dist = d;
+
+			near = root;
+			return;
+		}
+
 		orientation %= dimensions;
-		kd_node* temp;
-		if (root->left != nullptr && n[orientation] < root->values[orientation]) 
-			temp = nearest_neighbor_r(root->left, n, orientation + 1, min_dist, near);
-		else if (root->right != nullptr && n[orientation] >= root->values[orientation])
-			temp = nearest_neighbor_r(root->right, n, orientation + 1, min_dist, near);
-		double d;
-		if (near != nullptr) d = dist(temp->values, near->values);
-		else d = dist(temp->values);
-		if (d < min_dist) near = temp;
-		return near;
+
+		bool wentRight = false;
+		if (root->left != nullptr && n[orientation] < root->values[orientation])
+			nearest_neighbor_r(root->left, n, orientation + 1, min_dist, near);
+		else {
+			nearest_neighbor_r(root->right, n, orientation + 1, min_dist, near);
+			wentRight = true;
+		}
+
+		int d = dist(root->values, n);
+		if (d < min_dist) {
+			min_dist = d;
+			near = root;
+		}
+
+		//compare orientation value vs nearest distance
+		int thisDim = root->values[orientation];
+		int nDim = n[orientation];
+		int sum = pow((thisDim - nDim), 2);
+		if (sum < min_dist) {
+			//recurse in other subtree.
+			if (wentRight && root->left != nullptr) {
+				nearest_neighbor_r(root->left, n, orientation + 1, min_dist, near);
+			}
+			else if (!wentRight && root->right != nullptr) {
+				nearest_neighbor_r(root->right, n, orientation + 1, min_dist, near);
+			}
+		}
 	}
-	double dist(vector<int> a, vector<int> b = {}) {
+
+	int dist(vector<int> &a, vector<int> &b) {
+
+		//validate sizes
 		int sizeA = a.size();
-		if (b.size() == 0) return numeric_limits<double>::max();
 		int sizeB = b.size();
-		int sum = 0;
 		if (sizeA != sizeB) return -1;
+
+		int sum = 0;
 		for (int i = 0; i < sizeA; i++)
 			sum += pow((a[i] - b[i]), 2);
-		return sqrt(sum);
+		return sum;
 	}
 };
