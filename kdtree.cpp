@@ -50,11 +50,11 @@ public:
 
 	void balance() {
 		/* 
-		get all kd_nodes in list;
+		get all kd_nodes in list; O(n)
 		delete root;
 		2 choices:
-			1. pick random kd_nodes and insert them (probably will be balanced, but fast)
-			2. find median and do inserts with median (balanced, but slower)
+			1. pick random kd_nodes and insert them (probably will be balanced, but fast) O(n)
+			2. find median and do inserts with median (balanced, but slower) O(nlog(n))
 		*/ 
 	}
 
