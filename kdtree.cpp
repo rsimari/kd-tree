@@ -102,9 +102,12 @@ private:
 		// root->print();
 		if (root->left == nullptr && root->right == nullptr) {
 			int d = dist(root->values, n);
-			min_dist = d;
-
-			near = root;
+			// only set near = root if its distance to target is less than min_dist
+			// this will automatically happen for first leaf we hit
+			if (d < min_dist) {
+				min_dist = d;
+				near = root;
+			}
 			return;
 		}
 

@@ -148,6 +148,28 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		REQUIRE(d[1] == 5);
 	}
 
-	// TODO: need tests for recursing and then switching subtrees
+	SECTION("NN search switching subtrees from left to right") {
+		vector<int> c;
+		c.push_back(4); c.push_back(5); 
+		k.insert(c); // root
+
+		c[0] = 2; c[1] = 6; // left
+		k.insert(c);
+
+		c[0] = 4; c[1] = 1; // right
+		k.insert(c);
+
+		c[0] = 3; c[1] = 3; // left, left
+		k.insert(c);
+
+		c[0] = 2; c[1] = 8; // left, right
+		k.insert(c);
+
+		c[0] = 3; c[1] = 1; // should be closest to 4,1
+		vector<int> d = k.nearest_neighbor(c);
+
+		REQUIRE(d[0] == 4);
+		REQUIRE(d[1] == 1);
+	}
 }
 
