@@ -174,5 +174,6 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 		REQUIRE(d[0] == 4);
 		REQUIRE(d[1] == 1);
 	}
+
 }
 

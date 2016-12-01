@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <climits>
-#include <cassert>
+// #include <cassert>
 using namespace std;
 
 // template<Typename T>
@@ -46,6 +46,16 @@ public:
 		nearest_neighbor_r(root, n, orientation, max, nearest);
 		if (nearest == nullptr) return vector<int>();
 		return nearest->values;
+	}
+
+	void balance() {
+		/* 
+		get all kd_nodes in list;
+		delete root;
+		2 choices:
+			1. pick random kd_nodes and insert them (probably will be balanced, but fast)
+			2. find median and do inserts with median (balanced, but slower)
+		*/ 
 	}
 
 	void print() { print_r(root); }
@@ -103,7 +113,7 @@ private:
 		if (root->left == nullptr && root->right == nullptr) {
 			int d = dist(root->values, n);
 			// only set near = root if its distance to target is less than min_dist
-			// this will automatically happen for first leaf we hit
+			// this will automatically happen for first leaf we hit 
 			if (d < min_dist) {
 				min_dist = d;
 				near = root;
