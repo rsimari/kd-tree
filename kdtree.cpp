@@ -7,6 +7,14 @@ using namespace std;
 
 template<typename T>
 class kd_node {
+	friend ostream& operator<<(ostream &os, kd_node &n) {
+		os << "( ";
+		for (int i = 0; i < n.values.size(); i++) {
+			os << n.values[i] << " ";
+		}
+		os << ")";
+		return os;
+	}
 	public:
 	vector<T> values;
 	kd_node<T> *left;
@@ -26,7 +34,7 @@ class kd_range {
 	friend ostream& operator<<(ostream &os, kd_range &r) {
 		os << "(";
 		for (int i = 0; i < r.dimensions; i++) {
-			os << r.lower[i] << "..." << r.upper[i];
+			os << r.lower[i] << "..." << r.upper[i] << ", ";
 		}
 		os << ")";
 		return os;
@@ -37,12 +45,12 @@ class kd_range {
 	vector<T> upper;
 
 	kd_range() : dimensions(0) {}
-	kd_range(vector<T> &lower, vector<T> &upper) {
-		if (lower.size() < upper.size()) dimensions = lower.size();
-		else dimensions = upper.size();
+	kd_range(vector<T> &l, vector<T> &u) {
+		if (l.size() < u.size()) dimensions = l.size();
+		else dimensions = u.size();
 
-		lower = lower;
-		upper = upper;
+		lower = l;
+		upper = u;
 
 	}
 
@@ -51,8 +59,10 @@ class kd_range {
 	}
 
 	bool contains(vector<T> &n) {
+		if (dimensions == 0) return false;
+
 		for (int i = 0; i < dimensions; i++) {
-			if (n[i] < lower[i] && n[i] > upper[i]) {
+			if (n[i] < lower[i] || n[i] > upper[i]) {
 				return false;
 			}
 		}
@@ -67,19 +77,6 @@ class kd_range {
 
 };
 
-template <typename T>
-class range_node {
-	public:
-	kd_node<T> node;
-	int distance;
-};
-
-template <typename T>
-struct range_node_compare {
-	bool operator()(const range_node<T> &r1, const range_node<T> &r2) {
-		return r1.distance < r2.distance;
-	}
-};
 
 template<typename T>
 class kd_tree {
@@ -132,9 +129,8 @@ public:
 	//get all nodes falling with in a range specified by a kd_range object
 	vector<kd_node<T>*> range_search(kd_range<T> &r) {
 		vector<kd_node<T>* > results;
-
+		range_search_r(root, r, results, 0);
 		return results;
-
 	}
 
 	vector<kd_node<T>*> range_search(vector<T> &l, vector<T> &u) {
@@ -265,6 +261,27 @@ private:
 			else if (!wentRight && root->right != nullptr) {
 				nearest_neighbor_r(root->right, n, orientation + 1, min_dist, near);
 			}
+		}
+	}
+
+	//performs a range search
+	void range_search_r(kd_node<T> *&root, kd_range<T> &r, vector<kd_node<T>* > &n, int orientation) {
+		if (root == nullptr) return;
+
+		orientation %= dimensions;
+
+		int currVal = root->values[orientation];
+
+		if (currVal > r.upper[orientation])
+			range_search_r(root->left, r, n, orientation+1);
+		else if (currVal < r.lower[orientation])
+			range_search_r(root->right, r, n, orientation+1);
+		else {
+			//in the range for this orientation
+			if (r.contains(root))
+				n.push_back(root);
+			range_search_r(root->right, r, n, orientation+1);
+			range_search_r(root->left, r, n, orientation+1);
 		}
 	}
 

@@ -264,3 +264,225 @@ TEST_CASE("NN Algorithm Tests", "[kdtree::nearest_neighbor]") {
 	}
 
 }
+
+TEST_CASE("kd_range object", "[kdtree::kd_range]") {
+	vector<int> lower;
+	lower.push_back(3);
+	lower.push_back(10);
+	vector<int> upper;
+	upper.push_back(93);
+	upper.push_back(50);
+
+	SECTION("Constructor") {
+			kd_range<int> r(lower, upper);
+
+			REQUIRE(r.lower[0] == 3);
+			REQUIRE(r.upper[0] == 93);
+			REQUIRE(r.lower[1] == 10);
+			REQUIRE(r.upper[1] == 50);
+	}
+
+	SECTION("Contains - Empty range with vector") {
+		kd_range<int> r;
+		bool res = r.contains(lower);
+
+		REQUIRE(res == false);
+	}
+
+	SECTION("Contains - Empty range with kd_node") {
+		kd_range<int> r;
+		kd_node<int> *n = new kd_node<int>;
+		n->values = lower;
+		bool res = r.contains(n);
+
+		REQUIRE(res == false);
+	}
+
+	SECTION("Contains - True - Vector") {
+		kd_range<int> r(lower, upper);
+		bool res = r.contains(lower);
+
+		REQUIRE(res == true);
+	}
+
+	SECTION("Contains - True - KD_NODE") {
+		kd_range<int> r(lower, upper);
+		kd_node<int> *n = new kd_node<int>;
+		n->values = upper;
+		bool res = r.contains(n);
+
+		REQUIRE(res == true);
+	}
+
+	SECTION("Contains - False - Vector") {
+		kd_range<int> r(lower, upper);
+		vector<int> v1;
+		v1.push_back(100);
+		v1.push_back(0);
+
+		bool res = r.contains(v1);
+		REQUIRE(res == false);
+	}
+
+	SECTION("Contains - False - KD_NODE") {
+		kd_range<int> r(lower, upper);
+		kd_node<int> *n = new kd_node<int>;
+		vector<int> v1;
+		v1.push_back(100);
+		v1.push_back(0);
+		n->values = v1;
+
+		bool res = r.contains(n);
+		REQUIRE(res == false);
+	}
+
+
+}
+
+TEST_CASE("Range Search", "[kdtree::range]") {
+	kd_tree<int> k;
+	vector<int> lower;
+	lower.push_back(1);
+	lower.push_back(2);
+	vector<int> upper;
+	upper.push_back(4);
+	upper.push_back(5);
+
+	SECTION("Empty Tree") {
+		vector<kd_node<int>*> res = k.range_search(lower, upper);
+		REQUIRE(res.size() == 0);
+	}
+
+	SECTION("Single Result Vector") {
+		k.insert(lower);
+		k.insert(upper);
+
+		lower[0] = 2;
+		lower[1] = 3;
+
+		upper[0] = 7;
+		upper[1] = 10;
+
+		vector<kd_node<int>*> res = k.range_search(lower, upper);
+
+		REQUIRE(res.size() == 1);
+		REQUIRE(res[0]->values[0] == 4);
+		REQUIRE(res[0]->values[1] == 5);
+	}
+
+	SECTION("Single Result kd_range") {
+		k.insert(lower);
+		k.insert(upper);
+
+		lower[0] = 2;
+		lower[1] = 3;
+
+		upper[0] = 7;
+		upper[1] = 10;
+
+		kd_range<int> r(lower, upper);
+		vector<kd_node<int>*> res = k.range_search(r);
+
+		REQUIRE(res.size() == 1);
+		REQUIRE(res[0]->values[0] == 4);
+		REQUIRE(res[0]->values[1] == 5);
+	}
+
+	SECTION("Single result on vector range boundary") {
+		k.insert(lower);
+		k.insert(upper);
+
+		lower[0] = 2;
+		lower[1] = 3;
+
+		vector<kd_node<int>* > res = k.range_search(lower, upper);
+
+		REQUIRE(res.size() == 1);
+		REQUIRE(res[0]->values[0] == 4);
+		REQUIRE(res[0]->values[1] == 5);
+
+	}
+
+	SECTION("No results with all coordinates out of vector range") {
+		k.insert(lower);
+		k.insert(upper);
+
+		lower[0] = 7;
+		lower[1] = 10;
+
+		upper[0] = 10;
+		upper[1] = 15;
+
+		vector<kd_node<int>* > res = k.range_search(lower, upper);
+
+		REQUIRE(res.size() == 0);
+	}
+
+	SECTION("No results with x-coordinate in vector range") {
+		k.insert(lower);
+		k.insert(upper);
+
+		lower[0] = 3;
+		lower[1] = 10;
+
+		upper[0] = 10;
+		upper[1] = 15;
+
+		vector<kd_node<int>* > res = k.range_search(lower, upper);
+
+		REQUIRE(res.size() == 0);
+	}
+
+	SECTION("Multiple results in vector range") {
+		k.insert(lower);
+		k.insert(upper);
+
+		vector<int> v1;
+		v1.push_back(14);
+		v1.push_back(12);
+		k.insert(v1);
+
+		vector<int> v2;
+		v2.push_back(8);
+		v2.push_back(2);
+		k.insert(v2);
+
+		lower[0] = 1;
+		lower[1] = 2;
+
+		upper[0] = 10;
+		upper[1] = 13;
+
+		vector<kd_node<int>* > res = k.range_search(lower, upper);
+
+		REQUIRE(res.size() == 3);
+		cout << res[0]->values[0];
+	}
+
+	SECTION("Multiple results in kd_range") {
+		k.insert(lower);
+		k.insert(upper);
+
+		vector<int> v1;
+		v1.push_back(14);
+		v1.push_back(12);
+		k.insert(v1);
+
+		vector<int> v2;
+		v2.push_back(8);
+		v2.push_back(2);
+		k.insert(v2);
+
+		lower[0] = 2;
+		lower[1] = 2;
+
+		upper[0] = 10;
+		upper[1] = 13;
+
+		kd_range<int> r(lower, upper);
+		vector<kd_node<int>* > res = k.range_search(r);
+
+		REQUIRE(res.size() == 2);
+	}
+
+}
