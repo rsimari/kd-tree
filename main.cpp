@@ -3,10 +3,10 @@
 
 int main() {
 
-	kd_tree *tree = new kd_tree();
+	kd_tree <int> *tree = new kd_tree<int>();
 
 	vector<int> c;
-	c.push_back(4); c.push_back(5); 
+	c.push_back(4); c.push_back(5);
 	tree->insert(c); // root
 
 	c[0] = 2; c[1] = 6; // left
@@ -23,11 +23,11 @@ int main() {
 
 	tree->print();
 
-	c[0] = 3; c[1] = 1; 
-	vector<int> d = tree->nearest_neighbor(c);
+	c[0] = 3; c[1] = 1;
+	kd_node<int> *res = tree->nearest_neighbor(c);
 
-	for (int i = 0; i < d.size(); i++) {
-		cout << d[i] << " " << endl;
+	for (int i = 0; i < res->values.size(); i++) {
+		cout << res->values[i] << " " << endl;
 	}
 
 	return 0;
