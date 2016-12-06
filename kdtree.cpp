@@ -2,17 +2,15 @@
 #include <vector>
 #include <cmath>
 #include <climits>
-// #include <cassert>
 using namespace std;
 
 template<typename T>
 class kd_node {
-	friend ostream& operator<<(ostream &os, kd_node &n) {
-		os << "( ";
-		for (int i = 0; i < n.values.size(); i++) {
-			os << n.values[i] << " ";
-		}
-		os << ")";
+	friend ostream& operator<< (ostream& os, kd_node &k) {
+		os << "(";
+		for (int i = 0; i < k.values.size()-1; i++) 
+			os << k.values[i] << ", ";
+		os << k.values[k.values.size()-1] << ")";
 		return os;
 	}
 	public:
@@ -211,10 +209,7 @@ private:
 		if (root == nullptr) return;
 		print_r(root->left);
 		int sz = root->values.size();
-		cout << "(";
-		for (int i = 0; i < sz - 1; i++)
-			cout << root->values[i] << ", ";
-		cout << root->values[sz - 1] << ")" << endl;
+		cout << root << endl;
 		print_r(root->right);
 	}
 
