@@ -26,13 +26,13 @@ int main() {
 	c[0] = 3; c[1] = 1;
 	kd_node<int> *res = nullptr;
 	res = tree->nearest_neighbor(c);
+	// kd_node<int>* res = tree->nearest_neighbor(c);
 
 	for (int i = 0; i < res->values.size(); i++) {
 		cout << res->values[i] << " " << endl;
 	}
 
 	delete tree;
-	// delete res;
 
 	return 0;
 
