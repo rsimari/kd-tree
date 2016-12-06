@@ -3,78 +3,8 @@
 #include <cmath>
 #include <climits>
 using namespace std;
-
-template<typename T>
-class kd_node {
-	friend ostream& operator<< (ostream& os, kd_node &k) {
-		os << "(";
-		for (int i = 0; i < k.values.size()-1; i++) 
-			os << k.values[i] << ", ";
-		os << k.values[k.values.size()-1] << ")";
-		return os;
-	}
-	public:
-	vector<T> values;
-	kd_node<T> *left;
-	kd_node<T> *right;
-
-	void print() {
-		for (typename vector<T>::iterator it = values.begin(); it < values.end(); it++) cout << *it << " ";
-		cout << endl;
-	}
-
-	kd_node() { left = nullptr; right = nullptr; }
-	~kd_node() { delete left; delete right; }
-};
-
-template<typename T>
-class kd_range {
-	friend ostream& operator<<(ostream &os, kd_range &r) {
-		os << "(";
-		for (int i = 0; i < r.dimensions; i++) {
-			os << r.lower[i] << "..." << r.upper[i] << ", ";
-		}
-		os << ")";
-		return os;
-	}
-
-	public:
-	vector<T> lower;
-	vector<T> upper;
-
-	kd_range() : dimensions(0) {}
-	kd_range(vector<T> &l, vector<T> &u) {
-		if (l.size() < u.size()) dimensions = l.size();
-		else dimensions = u.size();
-
-		lower = l;
-		upper = u;
-
-	}
-
-	bool contains(kd_node<T> *&n) {
-		return contains(n->values);
-	}
-
-	bool contains(vector<T> &n) {
-		if (dimensions == 0) return false;
-
-		for (int i = 0; i < dimensions; i++) {
-			if (n[i] < lower[i] || n[i] > upper[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	~kd_range() {};
-	int dimension() const { return dimensions; }
-
-	private:
-	int dimensions;
-
-};
-
+#include "kd_node.cpp"
+#include "kd_range.cpp"
 
 template<typename T>
 class kd_tree {
@@ -91,12 +21,24 @@ public:
 	//insert into KD tree
 	void insert(vector<T> &new_values) {
 		if (new_values.size() != dimensions) return;
+		kd_node<T> *new_node = new kd_node<T>();
+		new_node->values = new_values;
+		SIZE++;
 		if (root == nullptr) {
-			kd_node<T> *new_node = new kd_node<T>();
-			new_node->values = new_values;
 			root = new_node;
-			SIZE++;
-		} else insert_r(root, new_values, 0);
+		} else insert_r(root, new_node, 0);
+	}
+
+	void insert_with_id(vector<T> &new_values, int id) {
+		if (new_values.size() != dimensions) return;
+		kd_node<T> *new_node = new kd_node<T>();
+		new_node->values = new_values;
+		SIZE++;
+		new_node->id = id;
+
+		if (root == nullptr) {
+			root = new_node;
+		} else insert_r(root, new_node, 0);
 	}
 
 	//search KD tree based on coordinate values
@@ -157,33 +99,26 @@ private:
 	size_t SIZE;
 
 	//recursively insert into KD tree
-	void insert_r(kd_node<T>* root, vector<T> &new_values, int orientation) {
+	void insert_r(kd_node<T>* root, kd_node<T>* &new_node, int orientation) {
 		if (root == nullptr) return;
 		orientation %= dimensions;
 		// normal bst insertion except we look at a specific element of the values vector
-		if (new_values[orientation] < root->values[orientation]) {
+		if (new_node->values[orientation] < root->values[orientation]) {
 			if (root->left == nullptr) {
-				kd_node<T> *new_node = new kd_node<T>();
 				root->left = new_node;
-				new_node->values = new_values;
-				SIZE++;
 				return;
 			} else {
-				insert_r(root->left, new_values, orientation + 1);
+				insert_r(root->left, new_node, orientation + 1);
 			}
 		}
-		else if (new_values[orientation] >= root->values[orientation]) {
+		else if (new_node->values[orientation] >= root->values[orientation]) {
 			if (root->right == nullptr) {
-				kd_node<T> *new_node = new kd_node<T>();
 				root->right = new_node;
-				new_node->values = new_values;
-				SIZE++;
 				return;
 			} else  {
-				insert_r(root->right, new_values, orientation + 1);
+				insert_r(root->right, new_node, orientation + 1);
 			}
 		}
-		return;
 	}
 
 	//recursively search KD tree
@@ -209,7 +144,7 @@ private:
 		if (root == nullptr) return;
 		print_r(root->left);
 		int sz = root->values.size();
-		cout << root << endl;
+		cout << (*root) << endl;
 		print_r(root->right);
 	}
 
