@@ -11,5 +11,8 @@ main: kdtree.o
 test: kdtree.o test.t.cpp
 	$(COMP) test.t.cpp -o test && ./test
 
+test.n: test.n.cpp
+	$(COMP) $(FLAGS) $< -o $@ 
+
 clean:
 	rm *.o main test
