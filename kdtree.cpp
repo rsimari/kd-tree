@@ -8,7 +8,7 @@ template<typename T>
 class kd_node {
 	friend ostream& operator<< (ostream& os, kd_node &k) {
 		os << "(";
-		for (int i = 0; i < k.values.size()-1; i++) 
+		for (int i = 0; i < k.values.size()-1; i++)
 			os << k.values[i] << ", ";
 		os << k.values[k.values.size()-1] << ")";
 		return os;
@@ -17,6 +17,7 @@ class kd_node {
 	vector<T> values;
 	kd_node<T> *left;
 	kd_node<T> *right;
+	int id;
 
 	void print() {
 		for (typename vector<T>::iterator it = values.begin(); it < values.end(); it++) cout << *it << " ";
@@ -91,12 +92,24 @@ public:
 	//insert into KD tree
 	void insert(vector<T> &new_values) {
 		if (new_values.size() != dimensions) return;
+		kd_node<T> *new_node = new kd_node<T>();
+		new_node->values = new_values;
+		SIZE++;
 		if (root == nullptr) {
-			kd_node<T> *new_node = new kd_node<T>();
-			new_node->values = new_values;
 			root = new_node;
-			SIZE++;
-		} else insert_r(root, new_values, 0);
+		} else insert_r(root, new_node, 0);
+	}
+
+	void insert_with_id(vector<T> &new_values, int id) {
+		if (new_values.size() != dimensions) return;
+		kd_node<T> *new_node = new kd_node<T>();
+		new_node->values = new_values;
+		SIZE++;
+		new_node->id = id;
+
+		if (root == nullptr) {
+			root = new_node;
+		} else insert_r(root, new_node, 0);
 	}
 
 	//search KD tree based on coordinate values
@@ -157,33 +170,26 @@ private:
 	size_t SIZE;
 
 	//recursively insert into KD tree
-	void insert_r(kd_node<T>* root, vector<T> &new_values, int orientation) {
+	void insert_r(kd_node<T>* root, kd_node<T>* &new_node, int orientation) {
 		if (root == nullptr) return;
 		orientation %= dimensions;
 		// normal bst insertion except we look at a specific element of the values vector
-		if (new_values[orientation] < root->values[orientation]) {
+		if (new_node->values[orientation] < root->values[orientation]) {
 			if (root->left == nullptr) {
-				kd_node<T> *new_node = new kd_node<T>();
 				root->left = new_node;
-				new_node->values = new_values;
-				SIZE++;
 				return;
 			} else {
-				insert_r(root->left, new_values, orientation + 1);
+				insert_r(root->left, new_node, orientation + 1);
 			}
 		}
-		else if (new_values[orientation] >= root->values[orientation]) {
+		else if (new_node->values[orientation] >= root->values[orientation]) {
 			if (root->right == nullptr) {
-				kd_node<T> *new_node = new kd_node<T>();
 				root->right = new_node;
-				new_node->values = new_values;
-				SIZE++;
 				return;
 			} else  {
-				insert_r(root->right, new_values, orientation + 1);
+				insert_r(root->right, new_node, orientation + 1);
 			}
 		}
-		return;
 	}
 
 	//recursively search KD tree
@@ -209,7 +215,7 @@ private:
 		if (root == nullptr) return;
 		print_r(root->left);
 		int sz = root->values.size();
-		cout << root << endl;
+		cout << (*root) << endl;
 		print_r(root->right);
 	}
 

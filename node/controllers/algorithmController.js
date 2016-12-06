@@ -22,10 +22,19 @@ AlgorithmController.prototype.nearestNeighbors = function(data, target, callback
   //console.log(inputPath);
   var outputPath = path.join(path.dirname(require.main.filename), outputFile);
 
-  var input = target.data["date"] + '\n';
-  input = input + target.data["popularity"] + '\n\n';
-  input = input + formatFileString(data, ["date", "popularity"]);
+  var keys = ["id", "date", "popularity", "category"]; //keys to be used in nearest neighbor processing
+  var subKeys = ["", "", "id"]; //subkeys of these keys.
 
+  var input = keys.length.toString() + '\n'; //begin to construct input string used for nearest neighbor processing
+
+  input = input + target.data["id"] + '\n';
+  var targetDate = new Date(target.data["date"]);
+  input = input + targetDate.getTime() + '\n';
+  input = input + target.data["popularity"] + '\n';
+  input = input + target.data["category"]["id"] + '\n';
+
+  input = input + formatFileString(data, keys, ["", "", "", "id"]);
+  console.log(input);
   // write the "under" value to the input files
   fs.writeFile(inputPath, input, function(err) {
     if (err) throw err;
@@ -44,15 +53,21 @@ AlgorithmController.prototype.nearestNeighbors = function(data, target, callback
     });
 };
 
-function formatFileString(data, keys) {
+function formatFileString(data, keys, subkeys) {
   var result = '';
   for (var i = 0; i < data.length; i++) {
     for (var j = 0; j < keys.length; j++) {
       var eventObj = data[i].data;
-      result = result + eventObj[keys[j]] + '\n';
+      if (keys[j] == "date") {
+        var date = new Date(eventObj[keys[j]]);
+        result = result + date.getTime() + '\n';
+      }
+      else if (subkeys[j] != "") {result = result + eventObj[keys[j]][subkeys[j]] + '\n';}
+      else {result = result + eventObj[keys[j]] + '\n';}
     }
-    result += '\n';
   }
+  var s = -1;
+  result += s.toString();
   return result;
 }
 
