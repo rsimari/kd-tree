@@ -3,7 +3,6 @@
 #include <cmath>
 #include <climits>
 using namespace std;
-#include "kd_node.cpp"
 #include "kd_range.cpp"
 
 template<typename T>
