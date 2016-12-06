@@ -456,7 +456,7 @@ TEST_CASE("Range Search", "[kdtree::range]") {
 		vector<kd_node<int>* > res = k.range_search(lower, upper);
 
 		REQUIRE(res.size() == 3);
-		cout << res[0]->values[0];
+		// cout << res[0m]->values[0];
 	}
 
 	SECTION("Multiple results in kd_range") {
