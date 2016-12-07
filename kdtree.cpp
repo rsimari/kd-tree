@@ -6,11 +6,10 @@ using namespace std;
 #include "kd_range.cpp"
 #include "kd_node_compare.cpp"
 
-
 template<typename T>
 class kd_tree {
 public:
-	
+
 	kd_tree() : dimensions(2), SIZE(0) { root = nullptr; }
 	kd_tree(int d) :  SIZE(0) {
 		if (d <= 1) dimensions = 2;
@@ -41,7 +40,7 @@ public:
 		if (new_node->values.size() != dimensions) return;
 		if (root == nullptr) {
 			root = new_node;
-		} else insert_r(root, new_node, 0);	
+		} else insert_r(root, new_node, 0);
 	}
 
 	void insert_with_id(vector<T> &new_values, int id) {
@@ -215,7 +214,7 @@ private:
 		if (root == nullptr) return;
 
 		orientation %= dimensions;
-
+		
 		int currVal = root->values[orientation];
 
 		if (currVal > r.upper[orientation])
