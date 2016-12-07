@@ -5,7 +5,7 @@ all: main
 main: kdtree.o
 	$(COMP) $(FLAGS) main.cpp -o main
 
-test: test-out test-mem
+test: test-out test-mem measure
 
 %.o: %.cpp
 	$(COMP) $(FLAGS) -o $@ -c $<
@@ -20,6 +20,9 @@ nearest: nearest.cpp
 test-mem:	main
 	@echo Testing Memory...
 	@[ `valgrind --leak-check=full ./main 2>&1 | grep ERROR | awk '{print $$4}'` = 0 ]
+
+measure: main
+	$(COMP) $(FLAGS) measure.cpp -o measure && ./measure ./main
 
 clean:
 	rm *.o main test
