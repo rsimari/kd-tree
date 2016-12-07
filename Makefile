@@ -12,7 +12,7 @@ test: test-out test-mem measure
 
 test-out: kdtree.o test.t.cpp
 	@echo Testing Output...
-	$(COMP) test.t.cpp -o test && ./test
+	$(COMP) $(FLAGS) test.t.cpp -o test && ./test
 
 nearest: nearest.cpp
 	$(COMP) $(FLAGS) $< -o $@ 
