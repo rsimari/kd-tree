@@ -4,20 +4,33 @@
 #include <climits>
 using namespace std;
 #include "kd_range.cpp"
+#include "kd_node_compare.cpp"
+
+// template <typename T>
+// typedef typename kd_node<T>::iterator IT;
 
 template<typename T>
 class kd_tree {
 public:
+	
 	kd_tree() : dimensions(2), SIZE(0) { root = nullptr; }
 	kd_tree(int d) :  SIZE(0) {
 		if (d <= 1) dimensions = 2;
 		else dimensions = d;
 		root = nullptr;
 	}
+	kd_tree(vector<vector<T>> nodes) {
+		int depth = 0;
+		int start = 0;
+		int end = nodes.size() - 1;
+		root = make_balanced(nodes, start, end, depth);
+	}
 
 	~kd_tree() { delete root; }
 
-	//insert into KD tree
+	// typedef typename kd_node<T>::iterator IT;
+
+	//insert a vector into KD tree
 	void insert(vector<T> &new_values) {
 		if (new_values.size() != dimensions) return;
 		kd_node<T> *new_node = new kd_node<T>();
@@ -26,6 +39,13 @@ public:
 		if (root == nullptr) {
 			root = new_node;
 		} else insert_r(root, new_node, 0);
+	}
+
+	void insert(kd_node<T>* &new_node) {
+		if (new_node->values.size() != dimensions) return;
+		if (root == nullptr) {
+			root = new_node;
+		} else insert_r(root, new_node, 0);	
 	}
 
 	void insert_with_id(vector<T> &new_values, int id) {
@@ -236,6 +256,27 @@ private:
 		}
 
 		return true;
+	}
+
+	kd_node<T>* make_balanced(vector<vector<T>> &nodes, const int &start, const int &end, const int &depth) {
+		int size = start - end;
+		if (size < 1) {
+			kd_node<T>* new_node = new kd_node<T>(nodes[start]);
+			return new_node;
+		}
+
+		auto s = nodes.begin() + start;
+		auto e = nodes.begin() + end;
+		sort(s, e, compare_kd_nodes(depth));
+
+		int median_index = size / 2;
+		int it = start + median_index;
+
+		kd_node<T>* new_node = new kd_node<T>(nodes[it]);
+		new_node->left = make_balanced(nodes, start, start + median_index, depth % dimensions + 1);
+		new_node->right = make_balanced(nodes, start + median_index, end, depth % dimensions + 1);
+
+		return new_node;
 	}
 
 };
