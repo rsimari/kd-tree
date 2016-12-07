@@ -1,5 +1,4 @@
 /** event.js **/
-
 var schemas = require("./schemas.js");
 var TEvoWebService = require("./tevowebservice.js");
 var _ = require("lodash");
@@ -18,20 +17,6 @@ Event.prototype.get = function(name) {
 Event.prototype.set = function(name, value) {
   this.data[name] = value;
 }
-
-//Event.findEventById = function(id, callback) {
-  //find the event in db, or request or whatever.
-
-//  callback(NULL, NULL);
-//}
-
-//Event.searchEventByTitle = function(title, callback) {
-
-//}
-
-//Event.searchEventByZip = function(title, callback) {
-
-//}
 
 Event.searchEvents = function(term, callback) {
   var tevo = new TEvoWebService();
@@ -68,6 +53,18 @@ Event.listEvents = function(callback) {
       callback(err, null);
     }
   });
+}
+
+Event.getEventById = function(id, callback) {
+  var tevo = new TEvoWebService();
+
+  tevo.showEvent(id, function(err, res){
+    if (!err) {
+      callback(null, convertToEvent(res));
+    }
+    else callback(err, null);
+  });
+
 
 }
 
@@ -89,20 +86,25 @@ function convertToEventArray(events) {
   var eventArr = [];
   for (var i = 0; i < events.length; i++) {
     var eventStrObj = events[i];
-    var eventObj = {
-      id: eventStrObj.id,
-      title: eventStrObj.name,
-      date: eventStrObj.occurs_at,
-      performers: eventStrObj.performances,
-      venue:  eventStrObj.venue,
-      category: eventStrObj.category,
-      etickets: eventStrObj.products_eticket_count,
-      seating_chart_url:eventStrObj.configuration.seating_chart.medium,
-      popularity: eventStrObj.popularity_score
-    }
-    eventArr.push(new Event(eventObj));
+    var eventObj = convertToEvent(eventStrObj);
+    eventArr.push(eventObj);
   }
   return eventArr;
+}
+
+function convertToEvent(eventStrObj) {
+  var eventObj = {
+    id: eventStrObj.id,
+    title: eventStrObj.name,
+    date: eventStrObj.occurs_at,
+    performers: eventStrObj.performances,
+    venue:  eventStrObj.venue,
+    category: eventStrObj.category,
+    etickets: eventStrObj.products_eticket_count,
+    seating_chart_url:eventStrObj.configuration.seating_chart.medium,
+    popularity: eventStrObj.popularity_score
+  }
+  return new Event(eventObj);
 }
 
 module.exports = Event;

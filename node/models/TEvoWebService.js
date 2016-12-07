@@ -30,6 +30,17 @@ TEvoWebService.prototype.listEvents = function(options, callback) {
   });
 }
 
+TEvoWebService.prototype.showEvent = function(id, callback) {
+  this.performRequest({}, "GET", "/events/" + id, function(status, res){
+    if (status != 200) {
+      callback(Error("Ticket Evolution Error"), null);
+    }
+    else {
+      callback(null, res);
+    }
+  });
+}
+
 TEvoWebService.prototype.search = function(options, callback) {
   this.performRequest(options, "GET", "/search", function(status, res){
     if (status != 200) {
@@ -75,7 +86,7 @@ TEvoWebService.prototype.buildPathString = function(options, path) {
 
   //replace spaces with +
   path = path.replace(/ /g, '+');
-  console.log(path) ;
+  //console.log(path) ;
   return path;
 }
 

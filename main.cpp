@@ -3,7 +3,6 @@
 #include "kdtree.cpp"
 // #include "kd_node_compare.cpp"
 
-// void balance(vector<kd_node<double>*>&);
 
 int main() {
 	vector<vector<double>> all;
@@ -44,18 +43,4 @@ int main() {
 	return 0;
 
 }
-
-// void balance(vector<vector<double>> &nodes, int depth = 0) {
-// 	int size = nodes[0].values.size();
-// 	if (size < 1) return;
-// 	int dimension = depth % size;
-
-// 	sort(nodes.begin(), nodes.end(), kd_node_compare(dimension));
-
-// 	int median_index = size / 2;
-
-
-
-// 	return;
-// }
 

@@ -6,8 +6,6 @@ using namespace std;
 #include "kd_range.cpp"
 #include "kd_node_compare.cpp"
 
-// template <typename T>
-// typedef typename kd_node<T>::iterator IT;
 
 template<typename T>
 class kd_tree {
@@ -27,8 +25,6 @@ public:
 	}
 
 	~kd_tree() { delete root; }
-
-	// typedef typename kd_node<T>::iterator IT;
 
 	//insert a vector into KD tree
 	void insert(vector<T> &new_values) {
@@ -111,6 +107,7 @@ public:
 	void print() { print_r(root); }
 	size_t size() const { return SIZE; }
 	int dimension() const { return dimensions; }
+	void setDimension(int d) { dimensions = d; }
 
 private:
 	kd_node<T>* root;
