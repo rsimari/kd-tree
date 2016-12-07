@@ -256,23 +256,25 @@ private:
 
 	kd_node<T>* make_balanced(vector<vector<T>> &nodes, const int &start, const int &end, const int &depth) {
 		int size = end - start;
+		// size of list is just one element so return that node
 		if (size == 0) {
 			kd_node<T>* new_node = new kd_node<T>(nodes[start]);
 			return new_node;
 		} 
-		else if (size < 0) {
+		else if (size < 0) { // the case where a node will have an empty child
 			return nullptr;
 		}
 
 		auto s = nodes.begin() + start;
 		auto e = nodes.begin() + end + 1;
+		// sort nodes based on a certain dimension
 		sort(s, e, compare_kd_nodes(depth));
 		int median_index = start + size / 2;
 
 		kd_node<T>* new_node = new kd_node<T>(nodes[median_index]);
-		// left
+		// left subtree
 		new_node->left = make_balanced(nodes, start, median_index - 1, depth % dimensions + 1);
-		// right
+		// right subtree
 		new_node->right = make_balanced(nodes, median_index + 1, end, depth % dimensions + 1);
 
 		return new_node;
