@@ -12,6 +12,13 @@ class kd_node {
 		return os;
 	}
 	public:
+	kd_node() { left = nullptr; right = nullptr; }
+	kd_node(vector<T> v) {
+		left = nullptr;
+		right = nullptr;
+		values = v;
+	}
+	~kd_node() { delete left; delete right; }
 	vector<T> values;
 	kd_node<T> *left;
 	kd_node<T> *right;
@@ -22,6 +29,8 @@ class kd_node {
 		cout << endl;
 	}
 
-	kd_node() { left = nullptr; right = nullptr; }
-	~kd_node() { delete left; delete right; }
+	bool less_than(kd_node* &a, int dimension) {
+		return this->values[dimension] < a->values[dimension];
+	}
+
 };
