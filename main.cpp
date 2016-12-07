@@ -1,17 +1,44 @@
 #include <iostream>
 #include <algorithm>
+#include <chrono>
 #include "kdtree.cpp"
-// #include "kd_node_compare.cpp"
 
 
 int main() {
 	vector<vector<double>> all;
 	vector<double> c;
-	c.push_back(4); c.push_back(5);
+	c.push_back(0); c.push_back(0);
 	all.push_back(c);
 
+	int N = 100000;
+
+	kd_tree <double> tree;
+
+
+	auto startA = std::chrono::high_resolution_clock::now();
+	for (int i = 1; i < N; i++) {
+		c[0] = i; c[1] = i*2;
+		tree.insert(c);
+	}
+
+
+	// kd_tree <double> tree(all);
+
+	auto startB = std::chrono::high_resolution_clock::now();
+
+	for (int i = 0; i < 1000; i++) {
+		c[0] = i; c[1] = i + i*2;
+		auto res = tree.nearest_neighbor(c);
+	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	// std::chrono::duration<double> insert = startB - startA;
+	std::chrono::duration<double> search = end - startB;
+	// cout << insert.count() << endl;
+	cout << search.count() << endl;
 	// kd_tree <double> *tree = new kd_tree<double>(all);
-	kd_tree <double> tree(all);
+	// tree.print();
+	// cout << *res << endl;
 
 	// tree->insert(c); // root
 
