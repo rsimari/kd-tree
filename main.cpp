@@ -5,33 +5,49 @@
 
 
 int main() {
-	vector<vector<double>> all;
-	vector<double> c;
+	vector<vector<int>> all;
+	vector<int> c;
 	c.push_back(0); c.push_back(0);
 	all.push_back(c);
 
 	int N = 100;
 
-	kd_tree <double> tree;
+	kd_tree <int> tree;
 
-	// auto startA = std::chrono::high_resolution_clock::now();
 	for (int i = 1; i < N; i++) {
 		c[0] = i; c[1] = i*2;
 		tree.insert(c);
 	}
 
-	// auto startB = std::chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < 1000; i++) {
 		c[0] = i; c[1] = i + i*2;
 		auto res = tree.nearest_neighbor(c);
 	}
 
-	// auto end = std::chrono::high_resolution_clock::now();
-	// std::chrono::duration<double> search = end - startB;
-	// cout << search.count() << endl;
+	cout << "Tree: " << endl;
+	tree.print();
+	cout << endl; 
+
+	auto res = tree.nearest_neighbor(c);
+	cout << "Nearest Neighbor: " << *res << endl;
+
+	cout << endl << "Range Search: "<<endl;
+
+	vector<int> lowerBounds;
+	lowerBounds.push_back(4);
+	lowerBounds.push_back(10);
+
+	vector<int> higherBounds;
+	higherBounds.push_back(100);
+	higherBounds.push_back(84);
+
+	kd_range <int> r(lowerBounds, higherBounds);
+	vector<kd_node<int>*> rangeRes = tree.range_search(r);
+
+	for (int i = 0; i < rangeRes.size(); i++) {
+		cout << (*rangeRes[i]) << endl;
+	}
 
 	return 0;
-
 }
-
