@@ -19,7 +19,6 @@ AlgorithmController.prototype.nearestNeighbors = function(target, callback) {
   //exec and perform analysis in C++
   if (handle == null) callback(Error("Unitialized nearest neighbor handle."), null);
 
-  console.log(target); 
   var input = target.data["id"] + ', ';
   var targetDate = new Date(target.data["date"]);
   input = input + targetDate.getTime() + ', ';
