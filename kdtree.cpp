@@ -3,7 +3,6 @@
 #include <cmath>
 #include <climits>
 using namespace std;
-#include "kd_node.cpp"
 #include "kd_range.cpp"
 
 template<typename T>
@@ -92,6 +91,7 @@ public:
 	void print() { print_r(root); }
 	size_t size() const { return SIZE; }
 	int dimension() const { return dimensions; }
+	void setDimension(int d) { dimensions = d; }
 
 private:
 	kd_node<T>* root;
