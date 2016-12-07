@@ -10,7 +10,7 @@ template<typename T>
 class kd_tree {
 public:
 
-	kd_tree() : dimensions(2), SIZE(0) { root = nullptr; }
+	kd_tree() : dimensions(2), SIZE(0), root(nullptr) {}
 	kd_tree(int d) :  SIZE(0) {
 		if (d <= 1) dimensions = 2;
 		else dimensions = d;
@@ -90,17 +90,6 @@ public:
 	vector<kd_node<T>*> range_search(vector<T> &l, vector<T> &u) {
 		kd_range<T> r(l, u);
 		return range_search(r);
-	}
-
-	void balance() {
-		/*
-		get all kd_nodes in list; O(n)
-		delete root;
-		2 choices:
-			1. pick random kd_nodes and insert them (probably will not be balanced, but fast) O(n)
-			2. find median and do inserts with median (balanced, but slower) O(nlog(n))
-		we could create both and bench mark them too...
-		*/
 	}
 
 	void print() { print_r(root); }

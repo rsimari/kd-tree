@@ -2,7 +2,7 @@ FLAGS= -g -std=c++11
 COMP=g++
 all: main
 
-main: kdtree.o
+main: kdtree.o nearest
 	$(COMP) $(FLAGS) main.cpp -o main
 
 test: test-out test-mem measure
@@ -12,7 +12,7 @@ test: test-out test-mem measure
 
 test-out: kdtree.o test.t.cpp
 	@echo Testing Output...
-	$(COMP) test.t.cpp -o test && ./test
+	$(COMP) $(FLAGS) test.t.cpp -o test && ./test
 
 nearest: nearest.cpp
 	$(COMP) $(FLAGS) $< -o $@ 
