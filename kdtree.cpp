@@ -17,7 +17,7 @@ public:
 		else dimensions = d;
 		root = nullptr;
 	}
-	kd_tree(vector<vector<T>> nodes) {
+	kd_tree(vector<vector<T>> nodes) : dimensions(nodes[0].size()) {
 		int depth = 0;
 		int start = 0;
 		int end = nodes.size() - 1;
@@ -256,16 +256,14 @@ private:
 	}
 
 	kd_node<T>* make_balanced(vector<vector<T>> &nodes, const int &start, const int &end, const int &depth) {
-		int size = start - end;
-		if (size < 1) {
+		int size = end - start;
+		if (size <= 1) {
 			kd_node<T>* new_node = new kd_node<T>(nodes[start]);
 			return new_node;
 		}
-
 		auto s = nodes.begin() + start;
 		auto e = nodes.begin() + end;
 		sort(s, e, compare_kd_nodes(depth));
-
 		int median_index = size / 2;
 		int it = start + median_index;
 

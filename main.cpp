@@ -10,8 +10,20 @@ int main() {
 	c.push_back(4); c.push_back(5);
 	all.push_back(c);
 
+	int N = 100;
+
+	for (int i = 0; i < N; i++) {
+		c[0] = i; c[0] = i*2;
+		all.push_back(c);
+	}
+	// c[0] = 2; c[1] = 3;
+	// all.push_back(c);
+
 	// kd_tree <double> *tree = new kd_tree<double>(all);
 	kd_tree <double> tree(all);
+	c[0] = 3; c[1] = 6;
+	auto res = tree.nearest_neighbor(c);
+	cout << *res << endl;
 
 	// tree->insert(c); // root
 
