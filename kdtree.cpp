@@ -257,19 +257,24 @@ private:
 
 	kd_node<T>* make_balanced(vector<vector<T>> &nodes, const int &start, const int &end, const int &depth) {
 		int size = end - start;
-		if (size <= 1) {
+		if (size == 0) {
 			kd_node<T>* new_node = new kd_node<T>(nodes[start]);
 			return new_node;
+		} 
+		else if (size < 0) {
+			return nullptr;
 		}
-		auto s = nodes.begin() + start;
-		auto e = nodes.begin() + end;
-		sort(s, e, compare_kd_nodes(depth));
-		int median_index = size / 2;
-		int it = start + median_index;
 
-		kd_node<T>* new_node = new kd_node<T>(nodes[it]);
-		new_node->left = make_balanced(nodes, start, start + median_index, depth % dimensions + 1);
-		new_node->right = make_balanced(nodes, start + median_index, end, depth % dimensions + 1);
+		auto s = nodes.begin() + start;
+		auto e = nodes.begin() + end + 1;
+		sort(s, e, compare_kd_nodes(depth));
+		int median_index = start + size / 2;
+
+		kd_node<T>* new_node = new kd_node<T>(nodes[median_index]);
+		// left
+		new_node->left = make_balanced(nodes, start, median_index - 1, depth % dimensions + 1);
+		// right
+		new_node->right = make_balanced(nodes, median_index + 1, end, depth % dimensions + 1);
 
 		return new_node;
 	}
