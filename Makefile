@@ -24,5 +24,9 @@ test-mem:	main
 measure: main
 	$(COMP) $(FLAGS) measure.cpp -o measure && ./measure ./main
 
+bench: bench/benchmark.cpp
+	$(COMP) $(FLAGS) bench/benchmark.cpp -o benchmark && ./benchmark
+
 clean:
-	rm *.o main test
+	rm *.o main test 
+	rm bench/benchmark

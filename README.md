@@ -20,8 +20,38 @@ BENCHMARKS:
 	Results:
 	#todo add benchmarking results.
 
+2D Tree Balancing Times
 
+| Nodes    | Execution Time (s) | Memory (MBytes) |
+|----------|--------------------|-----------------|
+| 100      | .002705            | 0.734375        |
+| 1000     | .003681            | 0.867188        |
+| 10000    | .015682            | 2.468750        |
+| 100000   | .170147            | 17.582          |
+| 1000000  | 1.974              | 163.47          |
+| 10000000 | 23.285             | 1461.989        |
 
+Nearest neighbor on balanced tree (1000 searches)
+
+| Nodes    | Execution Time (s) |
+|----------|--------------------|
+| 100      | .00899             |
+| 1000     | .01659             |
+| 10000    | .0213              |
+| 100000   | .02599             |
+| 1000000  | .0340              |
+| 10000000 | .0653              |
+
+Nearest neighbor on unbalanced tree (1000 searches)
+
+| Nodes    | Execution Time (s) |
+|----------|--------------------|
+| 100      | .0206566           |
+| 1000     | .166991            |
+| 10000    | 1.58356            |
+| 100000   | 8.4532             |
+| 1000000  | INF                |
+| 10000000 | INF                |
 
 
 
@@ -31,31 +61,3 @@ NODE.JS APP:
 	it creates an instance of the 'AlgorithmController' and launches the nearest neighbor program using a member function. Once that has completed, it performs a
 	nearest neighbor search using a specific event retrieved from the API as the 'target' event. Finally, it prints data regarding both the target event as well as the
 	nearest neighbor that was found.
-
-
-
-
-
-
-
-
-Balancing
-
-100: 0.002705 seconds	0.734375 Mbytes
-1000: 0.003681 seconds	0.867188 Mbytes
-10000: 0.015682 seconds	2.468750 Mbytes
-100000: 0.170147 seconds	17.582031 Mbytes
-1000000: 1.974758 seconds	163.476562 Mbytes
-10000000: 23.285349 seconds	1461.988281 Mbytes
-
-NN w/ balance
-
-100: 0.001999 seconds	0.703125 Mbytes
-1000: 0.003240 seconds	0.843750 Mbytes
-10000: 0.015527 seconds	2.468750 Mbytes
-100000: 0.151865 seconds	17.589844 Mbytes
-1000000: 1.831353 seconds	163.492188 Mbytes
-
-0.0206566
-0.166991
-1.58356

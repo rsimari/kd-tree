@@ -10,7 +10,7 @@ int main() {
 	c.push_back(0); c.push_back(0);
 	all.push_back(c);
 
-	int N = 100;
+	int N = 1000;
 
 	kd_tree <int> tree;
 
@@ -18,7 +18,6 @@ int main() {
 		c[0] = i; c[1] = i*2;
 		tree.insert(c);
 	}
-
 
 	for (int i = 0; i < 1000; i++) {
 		c[0] = i; c[1] = i + i*2;
