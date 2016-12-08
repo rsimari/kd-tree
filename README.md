@@ -59,7 +59,7 @@ Nearest neighbor on unbalanced tree (1000 searches)
 | 1000000  | INF                |
 | 10000000 | INF                |
 
-	These benchmarks illustrate how our balancing algorithm greatly increases the speed of NN searches and how the NN search scales well with the number of nodes in the tree. This means our algorithm is at O(log(n)), which is expect for a kd-tree nearest neighbor search.
+These benchmarks illustrate how our balancing algorithm greatly increases the speed of NN searches and how the NN search scales well with the number of nodes in the tree. This means our algorithm is at O(log(n)), which is expect for a kd-tree nearest neighbor search.
 
 
 	NODE.JS APP:
