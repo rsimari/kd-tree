@@ -4,6 +4,9 @@ Presentation Deck: https://docs.google.com/presentation/d/169yjtvhggSNyJT2a8LMQe
 
 	To Run w/ C++ and node.js: $ node node/app.js
 
+	To Run just C++: $ make && ./main
+		which will run some basic kd-tree operations
+
 KD-Tree Event Recommendation Algorithm
 John Joyce & Robert Simari
 
