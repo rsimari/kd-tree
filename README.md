@@ -1,5 +1,7 @@
 README.md
 
+Presentation Deck: https://docs.google.com/presentation/d/169yjtvhggSNyJT2a8LMQeVJNUUQzUxAIwzljduL_NlE/edit?usp=sharing
+
 KD-Tree Event Recommendation Algorithm
 John Joyce & Robert Simari
 
